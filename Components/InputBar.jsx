@@ -4,29 +4,32 @@ import { useSelector, useDispatch } from "react-redux";
 import { setPrompt } from "@/GlobalRedux/ReducerFeatures/PromptSlice";
 const InputBar = () => {
   const [inpPrompt, setInpPrompt] = useState("");
+  const [inpMood, setInpMood] = useState("normal");
   const dispatch = useDispatch();
-  let prompt = useSelector((state) => state.prompt);
+  // let messageArray = useSelector((state) => state.messageArray);
   // console.log(prompt);
 
-  const displayConsole = () => {
-    const lastEl = prompt.prompt.length + 1;
-
-    console.log(prompt.prompt[lastEl]);
-  };
   const handleSubmit = (e) => {
     {
       e.preventDefault();
 
+      const messageObj = {
+        message: inpPrompt.trim(),
+        isUserPrompt: false,
+        mood: inpMood,
+      };
+
       dispatch(
         setPrompt({
-          prompt: inpPrompt.trim(),
-          mood: e.currentTarget.mood.value,
+          messageArray: messageObj,
+          messageObj,
         })
       );
 
       setInpPrompt("");
 
-      displayConsole();
+      // displayConsole();
+      console.log(inpMood);
     }
   };
 
@@ -48,11 +51,13 @@ const InputBar = () => {
         <select
           className='select border-none select-ghost w-max max-w-xs focus:none'
           name='mood'
+          value={inpMood}
+          onChange={(e) => setInpMood(e.target.value)}
         >
           <option>Normal</option>
-          <option>Svelte</option>
-          <option>Vue</option>
-          <option>React</option>
+          <option>Descriptive</option>
+          <option>Concise</option>
+          <option>Angry</option>
         </select>
         {/* Submission */}
         <button type='submit' disabled={inpPrompt.trim() === ""}>

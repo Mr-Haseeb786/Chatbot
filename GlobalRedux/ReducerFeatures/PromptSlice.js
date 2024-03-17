@@ -2,8 +2,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  prompt: [],
-  mood: "normal",
+  messageArray: [],
+  messageObj: {
+    message: "",
+    isUserPrompt: true,
+    mood: "normal",
+  },
 };
 
 export const PromptSlice = createSlice({
@@ -11,9 +15,11 @@ export const PromptSlice = createSlice({
   initialState,
   reducers: {
     setPrompt: (state, action) => {
-      state.prompt.push(action.payload.prompt);
+      state.messageArray.push(action.payload.messageArray);
+      state.messageObj = action.payload.messageObj;
       // state.prompt = action.payload.prompt;
-      state.mood = action.payload.mood;
+      // state.mood = action.payload.mood;
+      // state.isUserPrompt = action.payload.isUserPrompt;
     },
   },
 });

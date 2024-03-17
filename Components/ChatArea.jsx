@@ -1,21 +1,60 @@
 "use client";
 import React, { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setPrompt } from "@/GlobalRedux/ReducerFeatures/PromptSlice";
 
 const ChatArea = () => {
   const prompt = useSelector((state) => state.prompt);
-  console.log(prompt.prompt.length);
+  const dispatch = useDispatch();
+
+  // dispatch(
+  //   setPrompt({
+  //     ...setPrompt,
+  //     isUserPrompt: false,
+  //   })
+  // );
+
+  // let lastEl = prompt.prompt.length - 1;
+  // console.log(prompt.prompt[lastEl]);
+  console.log(prompt);
 
   return (
-    <div className='border-[1px] border-gray-500 mt-8 h-[30rem] rounded-md'>
-      <h2>
-        {prompt.prompt.map((p, index) => {
-          return <h3 key={index}>{p}</h3>;
+    <div className='border-[1px] border-gray-500 mt-8 h-[30rem] rounded-md overflow-hidden'>
+      <div className='chatResponses mt-2'>
+        {prompt.messageArray.map((p, index) => {
+          return (
+            <>
+              {p.isUserPrompt ? (
+                <div className='chat chat-end mr-2' key={index}>
+                  <div className='chat-bubble h-max'>{p.message}</div>
+                </div>
+              ) : (
+                <div className='chat chat-start ml-2' key={index}>
+                  <div className='chat-image avatar'>
+                    <div className='w-10 rounded-full'>
+                      <img
+                        alt='Tailwind CSS chat bubble component'
+                        src='https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg'
+                      />
+                    </div>
+                  </div>
+                  <div className='chat-bubble h-max'>{p.message}</div>
+                </div>
+              )}
+            </>
+          );
         })}
-      </h2>
+      </div>
+      {/* <div className='chatQueries'>
+        <div className='chat chat-start'>
+          <div className='chat-bubble'>test</div>
+        </div>
+        <div className='chat chat-start'>
+          <div className='chat-bubble'>test</div>
+        </div>
+      </div> */}
     </div>
   );
-  // <div className='h-64 bg-slate-400'></div>;
 };
 
 export default ChatArea;
