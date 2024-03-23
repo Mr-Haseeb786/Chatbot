@@ -1,6 +1,7 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import GlobalProvider from "@/GlobalRedux/GlobalProvider";
+import RQProvider from "@/utils/RQProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -11,10 +12,12 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <GlobalProvider>
-      <html lang='en'>
-        <body className={inter.className}>{children}</body>
-      </html>
-    </GlobalProvider>
+    <html lang='en'>
+      <GlobalProvider>
+        <body className={inter.className}>
+          <RQProvider>{children}</RQProvider>
+        </body>
+      </GlobalProvider>
+    </html>
   );
 }

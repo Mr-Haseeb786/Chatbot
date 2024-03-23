@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   messageArray: [],
   messageObj: {
+    id: "",
     message: "",
     isUserPrompt: true,
     mood: "normal",

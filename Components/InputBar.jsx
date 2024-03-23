@@ -1,36 +1,60 @@
 "use client";
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setPrompt } from "@/GlobalRedux/ReducerFeatures/PromptSlice";
+import { useMutation } from "@tanstack/react-query";
+import { postReq } from "@/utils/actions";
+import axios from "axios";
+import { nanoid } from "@reduxjs/toolkit";
 const InputBar = () => {
   const [inpPrompt, setInpPrompt] = useState("");
   const [inpMood, setInpMood] = useState("normal");
   const dispatch = useDispatch();
+  const {
+    mutate: sendMessage,
+    isPending,
+    error,
+  } = useMutation({
+    mutationFn: async (message) => {
+      const response = await axios.post(
+        "/api/messages",
+        { message: "test" },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+
+      return response;
+    },
+    onSuccess: () => {
+      console.log("success");
+    },
+  });
   // let messageArray = useSelector((state) => state.messageArray);
   // console.log(prompt);
 
   const handleSubmit = (e) => {
-    {
-      e.preventDefault();
+    e.preventDefault();
 
-      const messageObj = {
-        message: inpPrompt.trim(),
-        isUserPrompt: false,
-        mood: inpMood,
-      };
+    const messageObj = {
+      id: nanoid(),
+      message: inpPrompt.trim(),
+      isUserPrompt: true,
+      mood: inpMood,
+    };
 
-      dispatch(
-        setPrompt({
-          messageArray: messageObj,
-          messageObj,
-        })
-      );
+    dispatch(
+      setPrompt({
+        messageArray: messageObj,
+        messageObj,
+      })
+    );
+    setInpPrompt("");
 
-      setInpPrompt("");
-
-      // displayConsole();
-      console.log(inpMood);
-    }
+    sendMessage(messageObj);
   };
 
   return (
@@ -46,6 +70,8 @@ const InputBar = () => {
           name='prompt'
           value={inpPrompt}
           onChange={(e) => setInpPrompt(e.target.value)}
+          autoComplete='off'
+          spellCheck='true'
         />
         {/* Dropdown Mood Select */}
         <select

@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { setPrompt } from "@/GlobalRedux/ReducerFeatures/PromptSlice";
+// import { setPrompt } from "@/GlobalRedux/ReducerFeatures/PromptSlice";
 
 const ChatArea = () => {
   const prompt = useSelector((state) => state.prompt);
