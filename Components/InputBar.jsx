@@ -3,38 +3,63 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setPrompt } from "@/GlobalRedux/ReducerFeatures/PromptSlice";
 import { useMutation } from "@tanstack/react-query";
-import { postReq } from "@/utils/actions";
 import axios from "axios";
 import { nanoid } from "@reduxjs/toolkit";
+import { apiReq } from "@/utils/actions";
 const InputBar = () => {
   const [inpPrompt, setInpPrompt] = useState("");
   const [inpMood, setInpMood] = useState("normal");
   const dispatch = useDispatch();
-  const {
-    mutate: sendMessage,
-    isPending,
-    error,
-  } = useMutation({
-    mutationFn: async (message) => {
-      const response = await axios.post(
-        "/api/messages",
-        { message: "test" },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-        }
-      );
 
-      return response;
+  // const {
+  //   mutate: sendMessage,
+  //   isPending,
+  //   error,
+  //   data,
+  // } = useMutation({
+  //   mutationFn: async (message) => {
+  //     const response = await axios.post(
+  //       "/api/messages",
+  //       { messages: [message] },
+  //       {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           Accept: "application/json",
+  //         },
+  //       }
+  //     );
+  //     return response;
+  //   },
+
+  //   onSuccess: () => {
+  //     console.log("made call");
+  //   },
+  // });
+
+  const { mutate, isPending, error, data } = useMutation({
+    mutationKey: ["chatbot"],
+    mutationFn: apiReq,
+    onSuccess: (data) => {
+      console.log("data recieved", data.choices[0].message.content);
+
+      const messageObj = {
+        id: nanoid(),
+        message: data.choices[0].message.content,
+        isUserPrompt: false,
+        mood: inpMood,
+      };
+
+      dispatch(
+        setPrompt({
+          messageArray: messageObj,
+          messageObj,
+        })
+      );
     },
-    onSuccess: () => {
-      console.log("success");
+    onError: (error) => {
+      console.log(error);
     },
   });
-  // let messageArray = useSelector((state) => state.messageArray);
-  // console.log(prompt);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -54,7 +79,7 @@ const InputBar = () => {
     );
     setInpPrompt("");
 
-    sendMessage(messageObj);
+    mutate(messageObj);
   };
 
   return (

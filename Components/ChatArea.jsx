@@ -5,31 +5,21 @@ import { useSelector, useDispatch } from "react-redux";
 
 const ChatArea = () => {
   const prompt = useSelector((state) => state.prompt);
-  const dispatch = useDispatch();
 
-  // dispatch(
-  //   setPrompt({
-  //     ...setPrompt,
-  //     isUserPrompt: false,
-  //   })
-  // );
-
-  // let lastEl = prompt.prompt.length - 1;
-  // console.log(prompt.prompt[lastEl]);
   console.log(prompt);
 
   return (
-    <div className='border-[1px] border-gray-500 mt-8 h-[30rem] rounded-md overflow-hidden'>
-      <div className='chatResponses mt-2'>
+    <div className='border-[1px] border-gray-500 mt-8 h-[30rem] rounded-md overflow-auto'>
+      <div className='chatResponses mt-2 mb-4'>
         {prompt.messageArray.map((p, index) => {
           return (
             <>
               {p.isUserPrompt ? (
-                <div className='chat chat-end mr-2' key={index}>
+                <div className='chat chat-end mr-2 my-1' key={index}>
                   <div className='chat-bubble h-max'>{p.message}</div>
                 </div>
               ) : (
-                <div className='chat chat-start ml-2' key={index}>
+                <div className='chat chat-start ml-2 my-1' key={index}>
                   <div className='chat-image avatar'>
                     <div className='w-10 rounded-full'>
                       <img
