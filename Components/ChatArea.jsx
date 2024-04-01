@@ -9,7 +9,7 @@ const ChatArea = () => {
   console.log(prompt);
 
   return (
-    <div className='border-[1px] border-gray-500 mt-8 h-[30rem] rounded-md overflow-auto'>
+    <div className='border-[1px] border-gray-500 sm:h-[30rem] h-[37rem] rounded-md overflow-auto z-10 '>
       <div className='chatResponses mt-2 mb-4'>
         {prompt.messageArray.map((p, index) => {
           return (
@@ -19,7 +19,7 @@ const ChatArea = () => {
                   <div className='chat-bubble h-max'>{p.message}</div>
                 </div>
               ) : (
-                <div className='chat chat-start ml-2 my-1' key={index}>
+                <div className='chat chat-start ml-2 my-1' key={p.id}>
                   <div className='chat-image avatar'>
                     <div className='w-10 rounded-full'>
                       <img

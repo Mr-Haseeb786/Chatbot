@@ -18,9 +18,6 @@ export const PromptSlice = createSlice({
     setPrompt: (state, action) => {
       state.messageArray.push(action.payload.messageArray);
       state.messageObj = action.payload.messageObj;
-      // state.prompt = action.payload.prompt;
-      // state.mood = action.payload.mood;
-      // state.isUserPrompt = action.payload.isUserPrompt;
     },
   },
 });

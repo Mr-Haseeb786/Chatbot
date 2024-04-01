@@ -7,7 +7,7 @@ const homePage = () => {
         <h2 className='text-3xl mb-6 font-medium'>
           Welcome to Next.js Chatbot
         </h2>
-        <button className='bg-blue-500 py-3 font-bold px-5 rounded text-white'>
+        <button className='btn btn-active btn-primary'>
           <Link href='/chatbot'>Start Chatting!</Link>
         </button>
       </div>
