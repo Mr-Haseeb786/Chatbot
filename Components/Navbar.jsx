@@ -7,10 +7,6 @@ import { useState } from "react";
 import { setModel } from "@/GlobalRedux/ReducerFeatures/ModelSlice";
 const Navbar = () => {
   const [model, setInModel] = useState("GPT-3.5-Turbo");
-  const modelN = useSelector((state) => state.modelName);
-
-  console.log(modelN);
-
   const dispatch = useDispatch();
 
   const changeFunc = (e) => {
@@ -36,7 +32,9 @@ const Navbar = () => {
           >
             <option className='text-sm pr-0'>GPT-3.5-Turbo</option>
             <option className='text-sm'>GPT-4</option>
+            <option className='text-sm'>llama-2-70b-chat</option>
             <option className='text-sm'>Gemini-Pro</option>
+            <option className='text-sm'>Mixtral</option>
           </select>
         </div>
         <div className='navbar-end'></div>

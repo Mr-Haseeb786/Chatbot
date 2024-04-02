@@ -10,21 +10,32 @@ const InputBar = () => {
   const [inpPrompt, setInpPrompt] = useState("");
   const [inpMood, setInpMood] = useState("normal");
   const dispatch = useDispatch();
-  const modelN = useSelector((state) => state.modelName.model);
+  const { model, api } = useSelector((state) => state.modelName);
   const { messageArray } = useSelector((state) => state.prompt);
 
-  const { mutate, isPending, error, data } = useMutation({
+  const { mutate, isPending, error } = useMutation({
     mutationKey: ["chatbot"],
-    // mutationFn: apiReq,
-    mutationFn: () => {
-      return apiReq(messageArray, modelN);
+    mutationFn: (mood) => {
+      return apiReq(messageArray, mood, model, api);
     },
-    onSuccess: (data) => {
-      console.log("data recieved", data.choices[0].message.content);
+    onSuccess: async (stream) => {
+      const reader = stream.getReader();
+      const decoder = new TextDecoder();
 
+      let done = false;
+
+      while (!done) {
+        const { value, done: doneReading } = await reader.read();
+        done = doneReading;
+        const chunkValue = decoder.decode(value);
+        console.log(chunkValue);
+        // reading done now displaying left!
+      }
+
+      console.log("done");
       const messageObj = {
         id: nanoid(),
-        message: data.choices[0].message.content,
+        message: chunkValue,
         isUserPrompt: false,
         mood: inpMood,
       };
@@ -60,7 +71,7 @@ const InputBar = () => {
     setInpPrompt("");
 
     // mutate([...messageArray, messageObj], modelN);
-    mutate();
+    mutate(messageObj.mood);
   };
   if (error) {
     console.log(error);

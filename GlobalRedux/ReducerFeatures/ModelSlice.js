@@ -11,10 +11,12 @@ export const ModelSlice = createSlice({
   reducers: {
     setModel: (state, action) => {
       state.model = action.payload.model.toLowerCase();
+    },
+    setApi: (state, action) => {
       state.api = action.payload.api;
     },
   },
 });
 
-export const { setModel } = ModelSlice.actions;
+export const { setModel, setApi } = ModelSlice.actions;
 export default ModelSlice.reducer;

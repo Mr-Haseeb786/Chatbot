@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-// import { setPrompt } from "@/GlobalRedux/ReducerFeatures/PromptSlice";
+import { escapeHtml } from "sanitize-html";
 
 const ChatArea = () => {
   const prompt = useSelector((state) => state.prompt);
@@ -28,21 +28,15 @@ const ChatArea = () => {
                       />
                     </div>
                   </div>
-                  <div className='chat-bubble h-max'>{p.message}</div>
+                  <div className='chat-bubble h-max'>
+                    {() => escapeHtml(p.message)}
+                  </div>
                 </div>
               )}
             </>
           );
         })}
       </div>
-      {/* <div className='chatQueries'>
-        <div className='chat chat-start'>
-          <div className='chat-bubble'>test</div>
-        </div>
-        <div className='chat chat-start'>
-          <div className='chat-bubble'>test</div>
-        </div>
-      </div> */}
     </div>
   );
 };
