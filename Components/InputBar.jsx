@@ -18,27 +18,16 @@ const InputBar = () => {
     mutationFn: (mood) => {
       return apiReq(messageArray, mood, model, api);
     },
-    onSuccess: async (stream) => {
-      const reader = stream.getReader();
-      const decoder = new TextDecoder();
-
-      let done = false;
-
-      while (!done) {
-        const { value, done: doneReading } = await reader.read();
-        done = doneReading;
-        const chunkValue = decoder.decode(value);
-        console.log(chunkValue);
-        // reading done now displaying left!
-      }
-
+    onSuccess: (msg) => {
       console.log("done");
       const messageObj = {
         id: nanoid(),
-        message: chunkValue,
+        message: msg,
         isUserPrompt: false,
         mood: inpMood,
       };
+
+      console.log(messageObj);
 
       dispatch(
         setPrompt({
@@ -70,7 +59,6 @@ const InputBar = () => {
     );
     setInpPrompt("");
 
-    // mutate([...messageArray, messageObj], modelN);
     mutate(messageObj.mood);
   };
   if (error) {
@@ -85,7 +73,7 @@ const InputBar = () => {
       <label className='input input-bordered flex items-center gap-2 relative'>
         <input
           type='text'
-          className={`grow rounded placeholder:italic w-full ${
+          className={`input-ghost grow rounded placeholder:italic placeholder:text-sm w-full ${
             isPending && "opacity-50"
           }`}
           placeholder='Ask me Anything'
