@@ -1,8 +1,9 @@
 "use client";
+
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
-const ChatArea = () => {
+const ChatArea = async () => {
   const prompt = useSelector((state) => state.prompt);
 
   console.log(prompt);

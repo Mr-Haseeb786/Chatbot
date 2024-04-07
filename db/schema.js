@@ -1,11 +1,10 @@
-import { relations } from "drizzle-orm";
-import { boolean, text, varchar } from "drizzle-orm/mysql-core";
-import { sqliteTable } from "drizzle-orm/sqlite-core";
+import { relations, sql } from "drizzle-orm";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const messageObj = sqliteTable("Message", {
   id: text("id").primaryKey(),
   message: text("message"),
-  isUserPrompt: boolean("isUserPrompt"),
+  isUserPrompt: integer("isUserPrompt", { mode: "boolean" }),
   mood: text("mood"),
   messageArrayId: text("messageArrayId")
     .notNull()
@@ -14,6 +13,7 @@ export const messageObj = sqliteTable("Message", {
 
 export const messageArray = sqliteTable("MessageArray", {
   id: text("id").primaryKey(),
+  createdAt: text("createdAt").default(sql`CURRENT_TIMESTAMP`),
   title: text("title"),
 });
 

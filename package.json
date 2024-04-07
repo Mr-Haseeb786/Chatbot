@@ -10,10 +10,10 @@
     "migration:generate": "drizzle-kit generate:sqlite --schema=./db/schema.js"
   },
   "dependencies": {
+    "@libsql/client": "^0.6.0",
     "@reduxjs/toolkit": "^2.2.1",
     "@tanstack/react-query": "^5.28.6",
     "axios": "^1.6.8",
-    "better-sqlite3": "^9.4.5",
     "drizzle-orm": "^0.30.7",
     "next": "14.1.3",
     "openai": "^4.29.1",
