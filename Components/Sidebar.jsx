@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import Chats from "./Chats";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -64,24 +65,16 @@ const Sidebar = () => {
           </div>
           <div>
             <Link href='/'>
-              <h1 className='text-xl font-bold text-left'>Home</h1>
+              <h1 className='btn text-xl font-bold text-left'>Home</h1>
             </Link>
           </div>
+          <Chats />
         </article>
         <label className='swap swap-flip absolute bottom-1/4 right-4'>
           <input type='checkbox' checked={swap} onChange={changeFunc} />
           <div className='swap-on btn'>ConvoAI</div>
           <div className='swap-off btn'>Zuki Journey</div>
         </label>
-        {/* <label className='flex cursor-pointer gap-2'>
-          <span className='label-text'>Current</span>
-          <input
-            type='checkbox'
-            value='synthwave'
-            className='toggle theme-controller'
-          />
-          <span className='label-text'>Synthwave</span>
-        </label> */}
       </div>
     </aside>
   );

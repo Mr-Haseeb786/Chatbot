@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React from "react";
+import { useSelector } from "react-redux";
 
-const ChatArea = async () => {
+const ChatArea = () => {
   const prompt = useSelector((state) => state.prompt);
+  // const { messageObj } = useSelector((state) => state.prompt);
 
   console.log(prompt);
 
@@ -12,6 +13,7 @@ const ChatArea = async () => {
     <div className='border-[1px] border-gray-500 sm:h-[30rem] h-[37rem] rounded-md overflow-auto z-10 '>
       <div className='chatResponses mt-2 mb-4'>
         {prompt.messageArray.map((p, index) => {
+          // prompt.messageObj.message = p.message;
           if (!p.isUserPrompt) {
             let botMsg = p.message;
             const pattern = "<SYSTEM>([\\s\\S]*?)<\\/SYSTEM>";
@@ -23,7 +25,7 @@ const ChatArea = async () => {
               botMsg = match[1];
             }
 
-            const parts = botMsg.replace(/\\n/g, "\n").split("\n");
+            // const parts = botMsg.replace(/\\n/g, "\n").split("\n");
 
             return (
               <>
@@ -34,12 +36,13 @@ const ChatArea = async () => {
                     </div>
                   </div>
                   <div className='chat-bubble h-max'>
-                    {parts.map((part, index) => (
+                    {/* {parts.map((part, index) => (
                       <span key={index}>
                         {part}
                         {index !== parts.length - 1 && <br />}
                       </span>
-                    ))}
+                    ))} */}
+                    {p.message}
                   </div>
                 </div>
               </>

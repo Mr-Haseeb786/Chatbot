@@ -1,14 +1,22 @@
 "use client";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setPrompt } from "@/GlobalRedux/ReducerFeatures/PromptSlice";
+import {
+  setPrompt,
+  resetMsg,
+  pushinArray,
+  setStreaminArray,
+} from "@/GlobalRedux/ReducerFeatures/PromptSlice";
 import { useMutation } from "@tanstack/react-query";
 import { nanoid } from "@reduxjs/toolkit";
-import { apiReq } from "@/utils/actions";
 import ErrorComp from "./ErrorComp";
+import { createMessageArray } from "@/utils/db.actions";
+import { streamApi } from "@/utils/streamingResponse";
 const InputBar = () => {
   const [inpPrompt, setInpPrompt] = useState("");
   const [inpMood, setInpMood] = useState("normal");
+  const [arrayId, setArrayId] = useState("");
+  const [dbUploading, setdbUploading] = useState(false);
   const dispatch = useDispatch();
   const { model, api } = useSelector((state) => state.modelName);
   const { messageArray } = useSelector((state) => state.prompt);
@@ -16,33 +24,53 @@ const InputBar = () => {
   const { mutate, isPending, error } = useMutation({
     mutationKey: ["chatbot"],
     mutationFn: (mood) => {
-      return apiReq(messageArray, mood, model, api);
+      return streamApi(messageArray, mood, model, api, arrayId);
     },
-    onSuccess: (msg) => {
+    onSuccess: async (stream) => {
       console.log("done");
+
+      if (!stream.body) {
+        console.log("Stream body is Null!");
+        // return;
+      }
       const messageObj = {
         id: nanoid(),
-        message: msg,
+        message: "",
         isUserPrompt: false,
         mood: inpMood,
       };
+      dispatch(pushinArray(messageObj));
 
-      console.log(messageObj);
+      const reader = stream.body.getReader();
+      const decoder = new TextDecoder();
+      while (true) {
+        const { value, done } = await reader.read();
 
-      dispatch(
-        setPrompt({
-          messageArray: messageObj,
-          messageObj,
-        })
-      );
+        const text = decoder.decode(value);
+
+        dispatch(setStreaminArray({ text: text }));
+
+        if (done) {
+          console.log("finished streaming");
+          break;
+        }
+      }
     },
     onError: (error) => {
       return error;
     },
   });
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Creating a message array if it does not exist
+    if (!arrayId) {
+      setdbUploading(true);
+      const messageArrId = await createMessageArray();
+      setdbUploading(false);
+      setArrayId(messageArrId.id);
+    }
 
     const messageObj = {
       id: nanoid(),
@@ -57,6 +85,7 @@ const InputBar = () => {
         messageObj,
       })
     );
+    dispatch(resetMsg());
     setInpPrompt("");
 
     mutate(messageObj.mood);
@@ -82,7 +111,7 @@ const InputBar = () => {
           onChange={(e) => setInpPrompt(e.target.value)}
           autoComplete='off'
           spellCheck='true'
-          disabled={isPending}
+          disabled={isPending || dbUploading}
         />
 
         {isPending && (
@@ -105,7 +134,7 @@ const InputBar = () => {
         </select>
         {/* Submission */}
         <button type='submit' disabled={inpPrompt.trim() === ""}>
-          {isPending ? (
+          {isPending || dbUploading ? (
             <span className='loading loading-ball loading-md'></span>
           ) : (
             <svg

@@ -11,8 +11,12 @@
 
 import axios from "axios";
 import { prompts } from "./prompts";
+// import { db } from "@/db";
+// import { messageArray as Chat } from "@/db/schema";
+// import { eq } from "drizzle-orm";
+import { OpenAIStream, StreamingTextResponse } from "ai";
 
-const parseMessage = (messageArray, mood) => {
+export const parseMessage = (messageArray, mood) => {
   const outboundMessages = messageArray.map((msg) => ({
     role: msg.isUserPrompt ? "user" : "system",
     content: msg.message,
@@ -51,7 +55,7 @@ const parseMessage = (messageArray, mood) => {
 };
 
 // API HANDLING
-export const apiReq = async (messageArray, mood, modelN, api) => {
+export const apiReq = async (messageArray, mood, modelN, api, arrayId) => {
   let baseUrl = "https://zukijourney.xyzbot.net";
   let API_KEY = "zu-b64a0b56e65f232458224d40c30322d4";
 
@@ -62,6 +66,20 @@ export const apiReq = async (messageArray, mood, modelN, api) => {
 
   const outboundMessages = parseMessage(messageArray, mood);
   try {
+    if (!arrayId) {
+      throw new Error("No Message Chat array found");
+    }
+
+    // const msgArrayId = db
+    //   .select({
+    //     id: arrayId,
+    //   })
+    //   .from(Chat)
+    //   .where(eq(Chat.id, arrayId));
+
+    // if (!msgArrayId) {
+    //   throw new Error("No Message Chat array ID found");
+    // }
     const { data } = await axios.post(
       ` ${baseUrl}/v1/chat/completions`,
       {
@@ -72,7 +90,8 @@ export const apiReq = async (messageArray, mood, modelN, api) => {
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0,
-        stream: false,
+        // stream: false,
+        stream: true,
       },
       {
         headers: {
@@ -82,25 +101,28 @@ export const apiReq = async (messageArray, mood, modelN, api) => {
       }
     );
 
-    console.log("success");
-    console.log(data.choices);
+    // console.log("success");
 
-    return data.choices[0].message.content;
+    // return data.choices[0].message.content;
+    const stream = OpenAIStream(data);
+    return new StreamingTextResponse(stream);
   } catch (error) {
-    console.log(error.response.data.error.message);
-    switch (error.response.status) {
-      case 401:
-        throw new Error("Error: Invalid API key");
-      case 402:
-        throw new Error(`Error: ${error.response.data.error.message}`);
-      case 404:
-        throw new Error("Error: Model not found");
-      case 429:
-        throw new Error("Error: Wait a bit senpai!");
-      default:
-        throw new Error(
-          `An Unknown Error Occured: ${error.response.data.error.message}`
-        );
-    }
+    // console.log(error.response.data.error.message);
+    // switch (error.response.status) {
+    //   case 401:
+    //     throw new Error("Error: Invalid API key");
+    //   case 402:
+    //     throw new Error(`Error: ${error.response.data.error.message}`);
+    //   case 404:
+    //     throw new Error("Error: Model not found");
+    //   case 429:
+    //     throw new Error("Error: Wait a bit senpai!");
+    //   default:
+    //     throw new Error(
+    //       `An Unknown Error Occured: ${error.response.data.error.message}`
+    //     );
+    // }
+    console.log(error);
+    return error;
   }
 };

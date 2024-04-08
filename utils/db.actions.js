@@ -1,12 +1,20 @@
+"use server";
+
 import { db } from "@/db";
 import { messageArray } from "@/db/schema";
 import { nanoid } from "@reduxjs/toolkit";
 
-export const insertMessage = async () => {
+export const createMessageArray = async () => {
+  const id = nanoid();
+
   await db.insert(messageArray).values({
-    id: nanoid(),
+    id: id,
     title: "test",
   });
+
+  return {
+    id,
+  };
 };
 
 export const getMessages = async () => {

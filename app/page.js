@@ -1,10 +1,6 @@
 import Link from "next/link";
-import { getMessages } from "@/utils/db.actions";
 
 const homePage = async () => {
-  const messages = await getMessages();
-  console.log(messages);
-
   return (
     <div className='grid place-items-center h-screen'>
       <div className='text-center'>

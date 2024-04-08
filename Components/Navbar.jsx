@@ -2,7 +2,7 @@
 
 import React from "react";
 import Sidebar from "./Sidebar";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useState } from "react";
 import { setModel } from "@/GlobalRedux/ReducerFeatures/ModelSlice";
 const Navbar = () => {
