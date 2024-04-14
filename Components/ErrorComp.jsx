@@ -15,7 +15,7 @@ const ErrorComp = ({ message }) => {
   return (
     <div
       // role='alert'
-      className={`transition-all opacity-100 alert flex alert-error absolute left-1/2 -translate-x-1/2 -translate-y-1/2 
+      className={`transition-all opacity-100 alert flex alert-error absolute left-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden 
       ${isVisible ? " top-1/4 " : " -top-40 "} w-max max-w-[60%] z-20 `}
     >
       <svg

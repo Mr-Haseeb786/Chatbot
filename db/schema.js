@@ -17,12 +17,12 @@ export const messageArray = sqliteTable("MessageArray", {
   title: text("title"),
 });
 
-export const arrayRelations = relations(messageArray, ({ many }) => ({
-  messageObjects: many(messageObj, {
-    fields: [messageObj.messageArrayId],
-    references: [messageArray.id],
-  }),
-}));
+// export const arrayRelations = relations(messageArray, ({ many }) => ({
+//   messageObjects: many(messageObj, {
+//     fields: [messageObj.messageArrayId],
+//     references: [messageArray.id],
+//   }),
+// }));
 
 // export const messageObjRelations = relations(messageObj, ({ one }) => ({
 //   messageArrayCont: one(messageArray, {

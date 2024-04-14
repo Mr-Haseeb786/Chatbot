@@ -6,20 +6,22 @@ import {
   resetMsg,
   pushinArray,
   setStreaminArray,
+  setArrayId,
+  setdbUpdate,
 } from "@/GlobalRedux/ReducerFeatures/PromptSlice";
 import { useMutation } from "@tanstack/react-query";
 import { nanoid } from "@reduxjs/toolkit";
 import ErrorComp from "./ErrorComp";
-import { createMessageArray } from "@/utils/db.actions";
+import { createMessageArray, updateArrayTitle } from "@/utils/db.actions";
 import { streamApi } from "@/utils/streamingResponse";
+
 const InputBar = () => {
   const [inpPrompt, setInpPrompt] = useState("");
   const [inpMood, setInpMood] = useState("normal");
-  const [arrayId, setArrayId] = useState("");
   const [dbUploading, setdbUploading] = useState(false);
   const dispatch = useDispatch();
   const { model, api } = useSelector((state) => state.modelName);
-  const { messageArray } = useSelector((state) => state.prompt);
+  const { messageArray, arrayId } = useSelector((state) => state.prompt);
 
   const { mutate, isPending, error } = useMutation({
     mutationKey: ["chatbot"],
@@ -64,20 +66,28 @@ const InputBar = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Creating a message array if it does not exist
-    if (!arrayId) {
-      setdbUploading(true);
-      const messageArrId = await createMessageArray();
-      setdbUploading(false);
-      setArrayId(messageArrId.id);
-    }
-
     const messageObj = {
-      id: nanoid(),
+      id: "local",
       message: inpPrompt.trim(),
       isUserPrompt: true,
       mood: inpMood,
     };
+
+    setInpPrompt("");
+
+    // Creating a message array if it does not exist
+
+    try {
+      if (!arrayId) {
+        setdbUploading(true);
+        const messageArrId = await createMessageArray();
+        setdbUploading(false);
+        dispatch(setArrayId({ id: messageArrId.id }));
+      }
+    } catch (error) {
+      alert("Error creating message array: " + error);
+      return;
+    }
 
     dispatch(
       setPrompt({
@@ -86,9 +96,15 @@ const InputBar = () => {
       })
     );
     dispatch(resetMsg());
-    setInpPrompt("");
 
     mutate(messageObj.mood);
+
+    try {
+      const res = await updateArrayTitle(messageObj.message);
+      if (res) dispatch(setdbUpdate());
+    } catch (error) {
+      console.log(error);
+    }
   };
   if (error) {
     console.log(error);

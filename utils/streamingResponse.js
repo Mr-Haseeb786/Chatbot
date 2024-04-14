@@ -2,22 +2,21 @@
 
 import { OpenAIStream, StreamingTextResponse } from "ai";
 import { prompts } from "./prompts";
-import { useDispatch, useSelector } from "react-redux";
+import { createSingleMessage as setMessage } from "./db.actions";
+import { nanoid } from "@reduxjs/toolkit";
 
+export const runtime = "edge";
 const parseMessage = (messageArray, mood) => {
   const outboundMessages = messageArray.map((msg) => ({
     role: msg.isUserPrompt ? "user" : "system",
     content: msg.message,
   }));
-  console.log(mood);
-
   // case statements to switch prompts to mood
 
   let systemPrompt;
   switch (mood) {
     case "Normal":
       systemPrompt = prompts[0];
-      console.log("first");
       break;
     case "Descriptive":
       systemPrompt = prompts[1];
@@ -38,21 +37,22 @@ const parseMessage = (messageArray, mood) => {
     content: systemPrompt,
   });
 
-  console.log(outboundMessages);
   return outboundMessages;
 };
 
 export const streamApi = async (messageArray, mood, modelN, api, arrayId) => {
   let baseUrl = "https://zukijourney.xyzbot.net";
-  let API_KEY = "zu-b64a0b56e65f232458224d40c30322d4";
+  let API_KEY = "zu-d96fc5be3f1bad0f451ddd7cb12aef9c"; //  --- zu-b64a0b56e65f232458224d40c30322d4
+  console.log(arrayId);
 
   if (api == "convoai") {
     baseUrl = "https://api.convoai.tech";
     API_KEY = "sk-rHk5AcwxQ6OLMkoJVzXjZYDTjYZRZSxWtpu3BhFkxmog28HL";
   }
 
+  console.log(messageArray);
+
   const outboundMessages = parseMessage(messageArray, mood);
-  console.log(outboundMessages.length);
 
   try {
     if (!arrayId) {
@@ -80,21 +80,32 @@ export const streamApi = async (messageArray, mood, modelN, api, arrayId) => {
 
     const stream = OpenAIStream(res, {
       onStart: async () => {
-        // This callback is called when the stream starts
-        // You can use this to save the prompt to your database
-        // await (prompt);
-        // console.log(messageArray)
+        const newMessage = {
+          id: nanoid(5),
+          message: messageArray[messageArray.length - 1].message,
+          isUserPrompt: true,
+          mood: mood,
+          arrayId: arrayId,
+        };
+
+        await setMessage(newMessage);
       },
-      onToken: async (token) => {},
+      onToken: async () => {},
       onCompletion: async (completion) => {
-        // This callback is called when the stream completes
-        // You can use this to save the final completion to your database
-        // await saveCompletionToDatabase(completion);
+        const newMessage = {
+          id: nanoid(4),
+          message: completion,
+          isUserPrompt: false,
+          mood: mood,
+          arrayId: arrayId,
+        };
+
+        await setMessage(newMessage);
       },
     });
     return new StreamingTextResponse(stream);
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     return error;
   }
 };

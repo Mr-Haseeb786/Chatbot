@@ -6,4 +6,5 @@ export default {
     url: process.env.DATABASE_URL,
     authToken: process.env.DATABASE_TOKEN,
   },
+  out: "./drizzle",
 };

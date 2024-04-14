@@ -1,4 +1,5 @@
 "use server";
+import { revalidateTag } from "next/cache";
 
 // zu-b56d44c2d9a4a66112832e0467e81b1b ----------- Zuki Journey @ https://zukijourney.xyzbot.net/v1
 // sk-rHk5AcwxQ6OLMkoJVzXjZYDTjYZRZSxWtpu3BhFkxmog28HL -------- ConvoAI @ https://api.convoai.tech
@@ -9,52 +10,55 @@
 //           },
 //         ],
 
-import axios from "axios";
-import { prompts } from "./prompts";
 // import { db } from "@/db";
 // import { messageArray as Chat } from "@/db/schema";
 // import { eq } from "drizzle-orm";
-import { OpenAIStream, StreamingTextResponse } from "ai";
+// import { OpenAIStream, StreamingTextResponse } from "ai";
 
-export const parseMessage = (messageArray, mood) => {
-  const outboundMessages = messageArray.map((msg) => ({
-    role: msg.isUserPrompt ? "user" : "system",
-    content: msg.message,
-  }));
-  console.log(mood);
+// export const parseMessage = (messageArray, mood) => {
+//   const outboundMessages = messageArray.map((msg) => ({
+//     role: msg.isUserPrompt ? "user" : "system",
+//     content: msg.message,
+//   }));
+//   console.log(mood);
 
-  // case statements to switch prompts to mood
+// case statements to switch prompts to mood
 
-  let systemPrompt;
-  switch (mood) {
-    case "Normal":
-      systemPrompt = prompts[0];
-      console.log("first");
-      break;
-    case "Descriptive":
-      systemPrompt = prompts[1];
-      break;
-    case "Concise":
-      systemPrompt = prompts[2];
-      break;
-    case "Angry":
-      systemPrompt = prompts[3];
-      break;
-    default:
-      systemPrompt = prompts[0];
-      break;
-  }
+//   let systemPrompt;
+//   switch (mood) {
+//     case "Normal":
+//       systemPrompt = prompts[0];
+//       console.log("first");
+//       break;
+//     case "Descriptive":
+//       systemPrompt = prompts[1];
+//       break;
+//     case "Concise":
+//       systemPrompt = prompts[2];
+//       break;
+//     case "Angry":
+//       systemPrompt = prompts[3];
+//       break;
+//     default:
+//       systemPrompt = prompts[0];
+//       break;
+//   }
 
-  outboundMessages.unshift({
-    role: "system",
-    content: systemPrompt,
-  });
+//   outboundMessages.unshift({
+//     role: "system",
+//     content: systemPrompt,
+//   });
 
-  console.log(outboundMessages);
-  return outboundMessages;
-};
+//   console.log(outboundMessages);
+//   return outboundMessages;
+// };
 
 // API HANDLING
+
+export default async function revalTag() {
+  revalidateTag("get-title-of-message-array");
+}
+
 export const apiReq = async (messageArray, mood, modelN, api, arrayId) => {
   let baseUrl = "https://zukijourney.xyzbot.net";
   let API_KEY = "zu-b64a0b56e65f232458224d40c30322d4";

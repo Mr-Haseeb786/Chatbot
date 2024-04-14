@@ -3,7 +3,7 @@ import { setApi } from "@/GlobalRedux/ReducerFeatures/ModelSlice";
 import Link from "next/link";
 import React from "react";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import Chats from "./Chats";
 
 const Sidebar = () => {
@@ -65,12 +65,15 @@ const Sidebar = () => {
           </div>
           <div>
             <Link href='/'>
-              <h1 className='btn text-xl font-bold text-left'>Home</h1>
+              <h1 className='btn  font-bold text-left'>Home</h1>
             </Link>
           </div>
           <Chats />
+          <Link href='/chatbot/custom-chat' className='btn btn-secondary mt-4 '>
+            Custom Chat
+          </Link>
         </article>
-        <label className='swap swap-flip absolute bottom-1/4 right-4'>
+        <label className='swap swap-flip absolute bottom-[2%] right-4'>
           <input type='checkbox' checked={swap} onChange={changeFunc} />
           <div className='swap-on btn'>ConvoAI</div>
           <div className='swap-off btn'>Zuki Journey</div>

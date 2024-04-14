@@ -1,29 +1,39 @@
 "use client";
 
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { oneDark as dark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import {
+  setArray,
+  setArrayId,
+} from "@/GlobalRedux/ReducerFeatures/PromptSlice";
 
-const ChatArea = () => {
+const ChatArea = ({ chatArray, chatId }) => {
+  const dispatch = useDispatch();
   const prompt = useSelector((state) => state.prompt);
-  // const { messageObj } = useSelector((state) => state.prompt);
-
-  console.log(prompt);
-
+  useEffect(() => {
+    dispatch(setArray(chatArray));
+    if (chatId) {
+      dispatch(setArrayId({ id: chatId }));
+    }
+  }, []);
   return (
     <div className='border-[1px] border-gray-500 sm:h-[30rem] h-[37rem] rounded-md overflow-auto z-10 '>
       <div className='chatResponses mt-2 mb-4'>
         {prompt.messageArray.map((p, index) => {
-          // prompt.messageObj.message = p.message;
           if (!p.isUserPrompt) {
-            let botMsg = p.message;
-            const pattern = "<SYSTEM>([\\s\\S]*?)<\\/SYSTEM>";
-            const regex = new RegExp(pattern);
+            // let botMsg = p.message;
+            // const pattern = "<SYSTEM>([\\s\\S]*?)<\\/SYSTEM>";
+            // const regex = new RegExp(pattern);
 
-            const match = regex.exec(botMsg);
+            // const match = regex.exec(botMsg);
 
-            if (match) {
-              botMsg = match[1];
-            }
+            // if (match) {
+            //   botMsg = match[1];
+            // }
 
             // const parts = botMsg.replace(/\\n/g, "\n").split("\n");
 
@@ -35,14 +45,32 @@ const ChatArea = () => {
                       <img alt='bot-img' src='/bot-img.png' />
                     </div>
                   </div>
-                  <div className='chat-bubble h-max'>
-                    {/* {parts.map((part, index) => (
-                      <span key={index}>
-                        {part}
-                        {index !== parts.length - 1 && <br />}
-                      </span>
-                    ))} */}
-                    {p.message}
+                  <div className='chat-bubble h-max prose max-w-[90%]'>
+                    <Markdown
+                      remarkPlugins={[remarkGfm]}
+                      components={{
+                        code(props) {
+                          const { children, className, node, ...rest } = props;
+                          const match = /language-(\w+)/.exec(className || "");
+                          return match ? (
+                            <SyntaxHighlighter
+                              PreTag='div'
+                              children={String(children).replace(/\n$/, "")}
+                              language={match[1]}
+                              style={dark}
+                              wrapLines={true}
+                              wrapLongLines={true}
+                            />
+                          ) : (
+                            <code {...rest} className={className}>
+                              {children}
+                            </code>
+                          );
+                        },
+                      }}
+                    >
+                      {p.message}
+                    </Markdown>
                   </div>
                 </div>
               </>

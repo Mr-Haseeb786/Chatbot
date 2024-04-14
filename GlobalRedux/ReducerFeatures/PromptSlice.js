@@ -9,6 +9,8 @@ const initialState = {
     isUserPrompt: true,
     mood: "normal",
   },
+  arrayId: null,
+  dbUpdate: 0,
 };
 
 export const PromptSlice = createSlice({
@@ -22,26 +24,33 @@ export const PromptSlice = createSlice({
     resetMsg: (state) => {
       state.messageObj.message = "";
     },
-    setStreamMsg: (state, action) => {
-      state.messageObj.isUserPrompt = false;
-      state.messageObj.message += action.payload.messageStream;
-    },
     setStreaminArray: (state, action) => {
       state.messageArray[state.messageArray.length - 1].message +=
         action.payload.text;
     },
+    setArray: (state, action) => {
+      state.messageArray = action.payload.map((el) => el);
+    },
+    setArrayId: (state, action) => {
+      state.arrayId = action.payload.id;
+    },
     pushinArray: (state, action) => {
       state.messageArray.push(action.payload);
+    },
+    setdbUpdate: (state) => {
+      state.dbUpdate = state.dbUpdate + 1;
     },
   },
 });
 
 export const {
   setPrompt,
-  setStreamMsg,
   resetMsg,
   pushinArray,
+  setArray,
   setStreaminArray,
+  setArrayId,
+  setdbUpdate,
 } = PromptSlice.actions;
 
 export default PromptSlice.reducer;

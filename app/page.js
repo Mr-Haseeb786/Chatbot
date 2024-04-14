@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const homePage = async () => {
+const homePage = () => {
   return (
     <div className='grid place-items-center h-screen'>
       <div className='text-center'>

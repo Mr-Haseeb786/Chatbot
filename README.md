@@ -10,4 +10,4 @@
 
 5. Running npm run migration:generate ----
 
-6. Push DB to hosted DB with npx drizzle-kit generate:sqlite push
+6. Push DB to hosted DB with npx drizzle-kit generate:sqlite push or npx drizzle-kit push:sqlite just to push
