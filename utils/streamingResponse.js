@@ -6,6 +6,8 @@ import { createSingleMessage as setMessage } from "./db.actions";
 import { nanoid } from "@reduxjs/toolkit";
 
 export const runtime = "edge";
+
+let fileCont = "";
 const parseMessage = (messageArray, mood) => {
   const outboundMessages = messageArray.map((msg) => ({
     role: msg.isUserPrompt ? "user" : "system",
@@ -37,6 +39,15 @@ const parseMessage = (messageArray, mood) => {
     content: systemPrompt,
   });
 
+  if (fileCont) {
+    outboundMessages.unshift({
+      role: "system",
+      content: fileCont,
+    });
+  } else {
+    console.log("No file contents in outbound message array");
+  }
+
   return outboundMessages;
 };
 
@@ -50,9 +61,8 @@ export const streamApi = async (messageArray, mood, modelN, api, arrayId) => {
     API_KEY = "sk-rHk5AcwxQ6OLMkoJVzXjZYDTjYZRZSxWtpu3BhFkxmog28HL";
   }
 
-  console.log(messageArray);
-
   const outboundMessages = parseMessage(messageArray, mood);
+  console.log("Outbound Messages: " + outboundMessages);
 
   try {
     if (!arrayId) {
@@ -108,4 +118,8 @@ export const streamApi = async (messageArray, mood, modelN, api, arrayId) => {
     console.log(error.message);
     return error;
   }
+};
+
+export const setFileContents = (cont) => {
+  fileCont = cont;
 };

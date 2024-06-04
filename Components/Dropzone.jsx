@@ -1,8 +1,14 @@
+import { resetMsg, setPrompt } from "@/GlobalRedux/ReducerFeatures/PromptSlice";
+import { nanoid } from "@reduxjs/toolkit";
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useDispatch } from "react-redux";
+import { prompts } from "@/utils/prompts";
+import { setFileContents as setFile } from "@/utils/streamingResponse";
 
 function MyDropzone({ setFileContents, fileContents }) {
-  // const [fileContents, setFileContents] = useState("");
+  // const [content, setContent] = useState("");
+  const dispatch = useDispatch();
 
   const [reading, setReading] = useState(""); // "", "COMPLETED", "READING"
 
@@ -12,13 +18,38 @@ function MyDropzone({ setFileContents, fileContents }) {
 
     reader.onloadstart = () => {
       setReading("READING");
-      console.log("reading");
     };
 
     reader.onload = () => {
-      const contents = reader.result;
-      setFileContents(contents);
+      const fileCont = reader.result;
+      setFileContents(fileCont);
       setReading("COMPLETED");
+      // console.log(fileCont);
+
+      if (fileCont) {
+        const messageObj = {
+          id: nanoid(4),
+          message: prompts[4] + "\n" + fileCont,
+          isUserPrompt: false,
+          mood: "normal",
+        };
+
+        // setFile(fileCont);
+
+        console.log(fileCont);
+
+        // dispatch(
+        //   setPrompt({
+        //     messageArray: messageObj,
+        //     messageObj,
+        //   })
+        // );
+        // dispatch(resetMsg());
+
+        // console.log(messageObj);
+      } else {
+        console.log("No File Contents Found");
+      }
     };
 
     reader.onloadend = () => {
@@ -30,8 +61,6 @@ function MyDropzone({ setFileContents, fileContents }) {
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-  // console.log(fileContents);
-
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} />
@@ -40,11 +69,27 @@ function MyDropzone({ setFileContents, fileContents }) {
           <p>Drop the files here ...</p>
         ) : (
           <p className='cursor-pointer'>
-            Drag 'n' drop some files here, or click to select files
+            Drag 'n' drop the file here, or click here
           </p>
         ))}
       {reading == "READING" && <p>Reading...</p>}
-      {fileContents && <p className='text-green-500'>Success!</p>}
+      {fileContents && (
+        <div className='flex gap-2 align-middle mt-4'>
+          {/* check icon */}
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            height='20'
+            width='20'
+            viewBox='0 0 512 512'
+          >
+            <path
+              fill='#10da4d'
+              d='M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zM369 209L241 337c-9.4 9.4-24.6 9.4-33.9 0l-64-64c-9.4-9.4-9.4-24.6 0-33.9s24.6-9.4 33.9 0l47 47L335 175c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9z'
+            />
+          </svg>
+          <span>File Uploaded!</span>
+        </div>
+      )}
     </div>
   );
 }

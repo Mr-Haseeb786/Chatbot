@@ -5,14 +5,16 @@ import MyDropzone from "./Dropzone";
 
 const Modal = () => {
   const [fileContents, setFileContents] = useState("");
-  console.log(fileContents);
+
+  if (fileContents) console.log(fileContents);
+
   return (
     <div>
       <button
-        className='btn'
+        className='btn btn-secondary'
         onClick={() => document.getElementById("my_modal_5").showModal()}
       >
-        open modal
+        Upload File
       </button>
       <dialog id='my_modal_5' className='modal modal-bottom sm:modal-middle'>
         <div className='modal-box'>
