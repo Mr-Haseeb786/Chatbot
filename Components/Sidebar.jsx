@@ -69,15 +69,15 @@ const Sidebar = () => {
             </Link>
           </div>
           <Chats />
-          <Link href='/chatbot/custom-chat' className='btn btn-secondary mt-4 '>
+          {/* <Link href='/chatbot/custom-chat' className='btn btn-secondary mt-4 '>
             Custom Chat
-          </Link>
+          </Link> */}
         </article>
-        <label className='swap swap-flip absolute bottom-[2%] right-4'>
+        {/* <label className='swap swap-flip absolute bottom-[2%] right-4'>
           <input type='checkbox' checked={swap} onChange={changeFunc} />
           <div className='swap-on btn'>ConvoAI</div>
           <div className='swap-off btn'>Zuki Journey</div>
-        </label>
+        </label> */}
       </div>
     </aside>
   );

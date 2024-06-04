@@ -10,6 +10,7 @@ import {
   setArray,
   setArrayId,
 } from "@/GlobalRedux/ReducerFeatures/PromptSlice";
+import "../CSS/scrollbar.css";
 
 const ChatArea = ({ chatArray, chatId }) => {
   const dispatch = useDispatch();
@@ -20,23 +21,12 @@ const ChatArea = ({ chatArray, chatId }) => {
       dispatch(setArrayId({ id: chatId }));
     }
   }, []);
+
   return (
-    <div className='border-[1px] border-gray-500 sm:h-[30rem] h-[37rem] rounded-md overflow-auto z-10 '>
+    <div className='border-[1px] border-gray-500 sm:h-[30rem] h-[37rem] rounded-md overflow-auto scrollbar-container z-10 '>
       <div className='chatResponses mt-2 mb-4'>
-        {prompt.messageArray.map((p, index) => {
+        {prompt.messageArray.map((p) => {
           if (!p.isUserPrompt) {
-            // let botMsg = p.message;
-            // const pattern = "<SYSTEM>([\\s\\S]*?)<\\/SYSTEM>";
-            // const regex = new RegExp(pattern);
-
-            // const match = regex.exec(botMsg);
-
-            // if (match) {
-            //   botMsg = match[1];
-            // }
-
-            // const parts = botMsg.replace(/\\n/g, "\n").split("\n");
-
             return (
               <>
                 <div className='chat chat-start ml-2 my-1' key={p.id}>
@@ -78,7 +68,7 @@ const ChatArea = ({ chatArray, chatId }) => {
           } else
             return (
               <>
-                <div className='chat chat-end mr-2 my-1' key={index}>
+                <div className='chat chat-end mr-2 my-1' key={p.id}>
                   <div className='chat-bubble h-max'>{p.message}</div>
                 </div>
               </>

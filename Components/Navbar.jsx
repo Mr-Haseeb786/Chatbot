@@ -32,9 +32,9 @@ const Navbar = () => {
           >
             <option className='text-sm pr-0'>GPT-3.5-Turbo</option>
             <option className='text-sm'>GPT-4</option>
-            <option className='text-sm'>llama-2-70b-chat</option>
+            <option className='text-sm'>Llama-3-70b-Instruct</option>
             <option className='text-sm'>Gemini-Pro</option>
-            <option className='text-sm'>Mixtral</option>
+            <option className='text-sm'>Mixtral-8x7b-Instruct</option>
           </select>
         </div>
         <div className='navbar-end'></div>

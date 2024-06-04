@@ -28,18 +28,6 @@ export const updateArrayTitle = async (t) => {
     .returning({ id: messageArray.id });
   return res;
 };
-// export const getArryIds = cache(
-//   async () =>
-//     await db
-//       .select({ id: messageArray.id, title: messageArray.title })
-//       .from(messageArray)
-//       .orderBy(desc(messageArray.createdAt))
-//       .all(),
-//   ["get-title-of-message-array"],
-//   {
-//     tags: ["get-title-of-message-array"],
-//   }
-// );
 export const getArryIds = async () => {
   return await db
     .select({ id: messageArray.id, title: messageArray.title })

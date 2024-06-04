@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setArrayId } from "@/GlobalRedux/ReducerFeatures/PromptSlice";
 import { useSelector } from "react-redux";
+import "../CSS/scrollbar.css";
 
 const Chats = () => {
   const { dbUpdate } = useSelector((state) => state.prompt);
@@ -24,7 +25,7 @@ const Chats = () => {
         <h1 className='text-xl mt-2 font-bold'>Chats</h1>
         <ul>
           <Link
-            className='btn  px-3 grid grid-cols-2 rounded cursor-pointer mt-3 truncate w-[90%]'
+            className='btn px-3 grid grid-cols-2 rounded cursor-pointer mt-3 truncate w-[90%]'
             href={`/chatbot`}
           >
             <span
@@ -47,11 +48,15 @@ const Chats = () => {
               </svg>
             </span>
           </Link>
-          <div className='h-[20rem] overflow-auto mt-4'>
+          <div className='h-[20rem] overflow-auto mt-4 scrollbar-container '>
             {chats.map((chat) => (
-              <Link href={`/chatbot/${chat.id}`} key={chat.id}>
-                <div className='btn justify-start px-3 rounded cursor-pointer mt-3 truncate w-[90%]'>
-                  {chat.title}
+              <Link
+                href={`/chatbot/${chat.id}`}
+                key={chat.id}
+                // className='truncate'
+              >
+                <div className='btn justify-start px-3 rounded cursor-pointer mt-3 w-[90%]'>
+                  <p className='truncate'>{chat.title}</p>
                 </div>
               </Link>
             ))}
