@@ -42,7 +42,7 @@ const parseMessage = (messageArray, mood) => {
   if (fileCont) {
     outboundMessages.unshift({
       role: "system",
-      content: fileCont,
+      content: prompts[4] + "\n" + fileCont,
     });
   } else {
     console.log("No file contents in outbound message array");
@@ -62,7 +62,6 @@ export const streamApi = async (messageArray, mood, modelN, api, arrayId) => {
   }
 
   const outboundMessages = parseMessage(messageArray, mood);
-  console.log("Outbound Messages: " + outboundMessages);
 
   try {
     if (!arrayId) {

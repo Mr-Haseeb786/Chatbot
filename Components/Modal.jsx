@@ -6,8 +6,6 @@ import MyDropzone from "./Dropzone";
 const Modal = () => {
   const [fileContents, setFileContents] = useState("");
 
-  if (fileContents) console.log(fileContents);
-
   return (
     <div>
       <button

@@ -1,9 +1,6 @@
-import { resetMsg, setPrompt } from "@/GlobalRedux/ReducerFeatures/PromptSlice";
-import { nanoid } from "@reduxjs/toolkit";
 import React, { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
 import { useDispatch } from "react-redux";
-import { prompts } from "@/utils/prompts";
 import { setFileContents as setFile } from "@/utils/streamingResponse";
 
 function MyDropzone({ setFileContents, fileContents }) {
@@ -27,26 +24,14 @@ function MyDropzone({ setFileContents, fileContents }) {
       // console.log(fileCont);
 
       if (fileCont) {
-        const messageObj = {
-          id: nanoid(4),
-          message: prompts[4] + "\n" + fileCont,
-          isUserPrompt: false,
-          mood: "normal",
-        };
+        // const messageObj = {
+        //   id: nanoid(4),
+        //   message: prompts[4] + "\n" + fileCont,
+        //   isUserPrompt: false,
+        //   mood: "normal",
+        // };
 
-        // setFile(fileCont);
-
-        console.log(fileCont);
-
-        // dispatch(
-        //   setPrompt({
-        //     messageArray: messageObj,
-        //     messageObj,
-        //   })
-        // );
-        // dispatch(resetMsg());
-
-        // console.log(messageObj);
+        setFile(fileCont);
       } else {
         console.log("No File Contents Found");
       }
